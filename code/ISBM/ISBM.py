@@ -2,28 +2,98 @@
 # https://github.com/pig0712/2023_summer_program
 # 2023_summer_program\code\ISBN
 
+import os
+
 class ISBN:
-    isbn = "8956741891"
+    ib = None
+    isbn = "8995432101"
+    addmark = None
 
     def __init__(self):
+        year = int(input("출판년도 입력 : "))
+
+        while True:
+            self.ib = input("ISBM 입력: ")
+
+            if year < 2007:
+                if len(self.ib) in [10,15]:
+                    print("A")
+                    break
+                else:
+                    print("ISBN을 다시 입력해 주세요.")
+                    print("B")
+
+            elif year >= 2007:
+                if len(self.ib) in [13,18]:
+                    print("C")
+                    break
+                else:
+                    print("ISBN을 다시 입력해 주세요.")
+                    print("D")
+            
+        print("#"*50+"\n")
+        print("10자리 ISBN"*(year < 2007) + "13자리 ISBN"*(year >= 2007))
+
+        print("ISBM : %s\n"%self.ib)
+        print("1. ISBN 유효성 검사\n")
+        print("2. 체크기호 유효성 검사\n")
+        print("#"*50)
+
+    def ISBN_input(self):
         pass
 
-
-    # 2007년 이전 (10자리) ISBN
+    # 2007년 이전 (10자리) ISBN (체크기호 10은 소문자x로 표시)
     def before_ISBN(self):
         add = 0
         mp = 10
-        for i in range(10):
-            add += int(self.isbn[i]) * mp
-            mp -= 1
-        
-        if add%11 == 0:
-            print("올바른 ISBN 입니다.")
+        if self.isbn[len(self.isbn)-1] == "x":
+            for i in range(len(self.isbn)-1):
+                add += int(self.isbn[i]) * mp
+                mp -= 1
+            add += 10 # 마지막 체크기호 x는 10 
+            if add%11 == 0:
+                print("올바른 ISBN 입니다.")
+            else:
+                print("올바르지 않은 ISBN 입니다.")
+
         else:
-            print("올바르지 않은 ISBN 입니다.")
+            for i in range(len(self.isbn)):
+                add += int(self.isbn[i]) * mp
+                mp -= 1
+                        
+            if add%11 == 0:
+                print("올바른 ISBN 입니다.")
+            else:
+                print("올바르지 않은 ISBN 입니다.")
 
 
+    # 2007년 이전 (10자리) 체크기호 (체크기호 10은 소문자x로 표시)
     def before_ISBN_checkmark(self):
+        add = 0
+        mp = 10
+        if self.isbn[len(self.isbn)-1] == "x":
+            for i in range(len(self.isbn)-1):
+                add += int(self.isbn[i]) * mp
+                mp -= 1 
+            chk = 11 - (add%11)
+            if  ("x" == self.isbn[len(self.isbn)-1]) and (10 == chk):
+                print("올바른 체크기호 입니다.")
+            else:
+                print("올바르지 않은 체크기호 입니다.")
+        else:
+            for i in range(len(self.isbn)-1):
+                add += int(self.isbn[i]) * mp
+                mp -= 1 
+
+            chk = 11 - (add%11)
+            if chk == int(self.isbn[len(self.isbn)-1]):
+                print("올바른 체크기호 입니다.")
+            else:
+                print("올바르지 않은 체크기호 입니다.")
+
+        pass
+    # 2007년 이전 (10자리) 부가기호
+    def before_ISBN_addmark(self):
         pass
 
     # 2007년 이후 (13자리) ISBN
@@ -40,6 +110,7 @@ class ISBN:
         else:
             print("올바르지 않은 ISBN 입니다.")
 
+
     # 2007년 이후 (13자리) 체크기호
     def after_ISBN_checkmark(self):
         add = 0
@@ -55,10 +126,13 @@ class ISBN:
         else:
             print("올바르지 않은 체크기호 입니다.")
             
+    # 2007년 이후 (13자리) 부가기호
+    def after_ISBN_addmark(self):
+        pass
 
 a = ISBN()
-a.before_ISBN()
 
+# os.system("cls") # 나중에 ui 만들떄 사용
 
 # 13자리 2가지 차이 000 , 000
 
