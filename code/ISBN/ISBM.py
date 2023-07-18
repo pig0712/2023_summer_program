@@ -1,6 +1,8 @@
 # v1.0 (2023-07-17)
-# https://github.com/pig0712/2023_summer_program
+# github : https://github.com/pig0712/2023_summer_program
 # 2023_summer_program\code\ISBN
+# 클래스 안쪽에 저런식으로 코드 짜면 안좋은데.. 
+# 주석달기 귀찮다. 
 
 import os
 import pandas as pd
