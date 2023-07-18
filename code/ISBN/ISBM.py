@@ -3,6 +3,8 @@
 # 2023_summer_program\code\ISBN
 # 클래스 안쪽에 저런식으로 코드 짜면 안좋은데.. 
 # 주석달기 귀찮다. 
+# 아 수정 해야하는데
+
 
 import os
 import pandas as pd
@@ -62,6 +64,7 @@ class ISBN:
                     print("ISBN을 다시 입력해 주세요.\n")
 
         self.ISBN_UI()
+        
             
     def ISBN_UI(self):
         os.system("cls")    
