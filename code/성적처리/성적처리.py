@@ -7,7 +7,7 @@ class GRADES:
     def __init__(self):
         os.system("cls")
         # ft = input("파일 경로를 입력해주세요: \n")
-        filet = "C:/Users/koll2/OneDrive/2023_summer_program/code/성적처리/sungjuk1.csv"
+        filet = "C:/Users/koll2/OneDrive/2023_summer_program/code/성적처리/sungjuk3.csv"
         files = open(filet,"r", encoding="utf-8")
         self.file = files.read()
 
@@ -18,6 +18,11 @@ class GRADES:
         self.file = list(self.file.split("\n"))
         for i in range(1, len(self.file)):
 
+            if self.file[i][-1] == "-":
+                self.file[i] = str(list(self.file).pop())   
+
+            if len(self.file[i]) == 15:
+                self.file[i] += "-00"
 
             if len(self.file[i]) != 18:
                 print("%s번에 잘못된 데이터값이 있습니다. "%i)
