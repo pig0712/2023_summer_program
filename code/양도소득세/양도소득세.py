@@ -32,7 +32,18 @@ class CGT:
         2594,
         3594,
         6594
-    ]
+    ],
+
+    "test" : [
+        1400,
+        5000,
+        8800,
+        15000,
+        30000,
+        50000,
+        100000,
+        100000
+    ] 
 } 
 
 
@@ -48,29 +59,9 @@ class CGT:
         self.td = self.tr - self.ac # 양도차액 계산
         self.aa = self.td - 250 # 과세금액 계산
 
-        if self.aa <= 1400:
-            self.c = 0
-
-        elif self.aa <= 5000:
-            self.c = 1
-
-        elif self.aa <= 8800:
-            self.c = 2
-        
-        elif self.aa <= 15000:
-            self.c = 3
-
-        elif self.aa <= 30000:
-            self.c = 4
-
-        elif self.aa <= 50000:
-            self.c = 5
-
-        elif self.aa <= 100000:
-            self.c = 6
-
-        elif self.aa > 100000:
-            self.c = 7
+        for i in range(0,8):
+            if self.aa <= self.data["test"][i]:
+                self.c = i # 마지막 7에서 한번 걸림 수정 필수 
 
     def ct(self): # 계산 메소드
         self.cgt = self.aa * self.data["세율"][self.c]/100 - self.data["누진공제"][self.c]# 양도소득세 계산
