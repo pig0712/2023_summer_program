@@ -1,57 +1,61 @@
 import requests
-import xml
+import json
 import pandas as pd
-from bs4 import BeautifulSoup as BS
-import pprint
+import os 
 
-# url 생성
-base_url = "http://apis.data.go.kr/1360000/WthrWrnInfoService"
-my_key = "sU1jMjDNWShKrOPsKYN09F+8fHfYjRseeXvD6I2WIU9UDh2A5bAKHQjLoVhnpCmwu4aE+QlQ0Zzkc/AqisS8yA=="
+def save_csv():
+  df = pd.concat(lst_rows, axis=1)
+  df = df.T #행렬바꾸기
+  df.to_csv('result.csv')
 
-page_no = 0
-rows_no = 1
+os.system("cls")
 
 lst_rows = []
 
-# 페이지 범위 지정
-for i in range(1, 2):
-  page_no = i
-  params = {
-    'ServiceKey' : my_key,
-    'pageNo': i,
-    'numOfRows': 20,
-    'dataType' : 'XML',
-    "stnId" : 184,
-    "fromTmFc" : 	20170601,
-    "toTmFc" : 	20170630
+page_no = 1
+page_size = 500
 
-  }
+my_url = 'http://apis.data.go.kr/1360000/AsosDalyInfoService/getWthrDataList'
+api_key = 'sU1jMjDNWShKrOPsKYN09F+8fHfYjRseeXvD6I2WIU9UDh2A5bAKHQjLoVhnpCmwu4aE+QlQ0Zzkc/AqisS8yA=='
 
-  # 서버에 응답 요청하기
-  response = requests.get(base_url, params=params)
-  contents = response.text
+try:
+  stD = [str(i)+"0101" for i in range(1920, 2020)]
+  enD = [str(i)+"1231" for i in range(1920, 2020)]
 
-  # 데이터 파싱하기
-  soup = BS(contents,'lxml-xml')
-  rows = soup.findAll('list')
+  for j in range(100):
 
-  # 행 단위 파싱
-  for row in rows:
-    dict_row = dict()
-    # 행의 콘텐츠 파싱
-    for rows_c in row.contents:
-      if rows_c.name is not None:
-        dict_row[rows_c.name] = rows_c.text
-      else:
+    params = {
+        'ServiceKey' : api_key ,
+        'numOfRows' : page_size,
+        'PageNo' : page_no,
+        'dataType' : 'JSON',
+        'dataCd' : 'ASOS',
+        'dateCd' : 'DAY',
+        'startDt' : stD[j], 
+        'endDt' : enD[j],
+        'stnIds' : '146'
+    }
+
+    for i in range(1, 4):
+      params['pageNo'] = i
+      response = requests.get(my_url, params=params) 
+      html = json.loads(response.text)
+
+      resultCode = html['response']['header']['resultCode']
+      if resultCode != '00':
         break
 
-    # 콘텐츠를 행 단위로 저장(dict 형식)
-    lst_rows.append(pd.Series(dict_row))
-  print(i)
+      items = html['response']['body']['items']['item']
+      for item in items:
+        lst_rows.append(pd.Series(item))
 
-# 파싱 데이터를 판다스 데이터프레임 형식으로 바꾸기
-df = pd.concat(lst_rows, axis=1)
-df = df.T
+      print("%s.%s"%(j,i))
 
-# 저장하기
-df.to_csv('noungsuri.csv')
+    print("[%s]"%j+1)
+
+  if enD[j] == "20200101":
+    save_csv()
+
+except:
+  print("멈추지마...")
+  save_csv()
