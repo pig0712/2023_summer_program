@@ -3,29 +3,33 @@ import bs4
 import pandas as pd
 from lxml import html
 
-serviceKey = 'sU1jMjDNWShKrOPsKYN09F+8fHfYjRseeXvD6I2WIU9UDh2A5bAKHQjLoVhnpCmwu4aE+QlQ0Zzkc/AqisS8yA=='
-serviceKey2 = 'sU1jMjDNWShKrOPsKYN09F%2B8fHfYjRseeXvD6I2WIU9UDh2A5bAKHQjLoVhnpCmwu4aE%2BQlQ0Zzkc%2FAqisS8yA%3D%3D'
 
+url = "http://apis.data.go.kr/1360000/WthrWrnInfoService"
+my_key = "sU1jMjDNWShKrOPsKYN09F+8fHfYjRseeXvD6I2WIU9UDh2A5bAKHQjLoVhnpCmwu4aE+QlQ0Zzkc/AqisS8yA=="
 
-url = 'http://openapi.jeonju.go.kr/rest/parking/getParkingList'
-params ={'serviceKey' : serviceKey, 
-         'authApiKey' : serviceKey, 
-         'dataValue' : '',
-         'parkingFee' : '',
-         'parkingSize' : '',
-         'startPage' : '',
-         'pageSize' : '' }
+params = {
+'ServiceKey' : my_key,
+'pageNo': "",
+'numOfRows': 20,
+'dataType' : 'XML',
+"stnId" : 184,
+"fromTmFc" : 20170601,
+"toTmFc" : 	20170630
+
+}
 
 lst_rows = []
 
 for i in range(1, 10):
-    params['startPage'] = i
+    params['pageNo'] = i
 
     response = requests.get(url, params=params, verify=False) # verify설정 추가
     content = response.text
     xml_obj = bs4.BeautifulSoup(content, 'lxml-xml')
-    resultCode = int(xml_obj.findAll('resultCode').pop().text)
-    resultMsg = (xml_obj.findAll('resultMsg').pop().text)
+
+    if len(lst_rows) != 0:
+        resultCode = int(xml_obj.findAll('resultCode').pop().text)
+        resultMsg = (xml_obj.findAll('resultMsg').pop().text)
 
     if resultCode != 0:
         print('Error')
@@ -44,10 +48,9 @@ for i in range(1, 10):
                 dict_row[t.name] = t.string
 
         lst_rows.append(pd.Series(dict_row))
+    print(i)
     
 df = pd.concat(lst_rows, axis=1)
 # df = pd.DataFrame(lst_rows)
 df = df.T
 df.to_csv('JeonJuParking1.csv')
-
-df

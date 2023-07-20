@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup as BS
 import pprint
 
 # url 생성
-base_url = "http://openapi.jeonju.go.kr/rest/nongsuriservice/getSuri"
-my_key = "vTXdmolPuhGZjqfYVME8tsl+CC01HMdG3qnF34Ks3VEtCl0q6Y3npMm/yUGY4ZzTRlPuLTfkMDua2ullOmuYnA=="
+base_url = "http://apis.data.go.kr/1360000/WthrWrnInfoService"
+my_key = "sU1jMjDNWShKrOPsKYN09F+8fHfYjRseeXvD6I2WIU9UDh2A5bAKHQjLoVhnpCmwu4aE+QlQ0Zzkc/AqisS8yA=="
 
 page_no = 0
 rows_no = 1
@@ -14,13 +14,17 @@ rows_no = 1
 lst_rows = []
 
 # 페이지 범위 지정
-for i in range(1, 20):
+for i in range(1, 2):
   page_no = i
   params = {
     'ServiceKey' : my_key,
-    'pageNo': page_no,
-    'numOfRows': rows_no,
-    'dataType' : 'XML'
+    'pageNo': i,
+    'numOfRows': 20,
+    'dataType' : 'XML',
+    "stnId" : 184,
+    "fromTmFc" : 	20170601,
+    "toTmFc" : 	20170630
+
   }
 
   # 서버에 응답 요청하기
@@ -43,6 +47,7 @@ for i in range(1, 20):
 
     # 콘텐츠를 행 단위로 저장(dict 형식)
     lst_rows.append(pd.Series(dict_row))
+  print(i)
 
 # 파싱 데이터를 판다스 데이터프레임 형식으로 바꾸기
 df = pd.concat(lst_rows, axis=1)
@@ -50,6 +55,3 @@ df = df.T
 
 # 저장하기
 df.to_csv('noungsuri.csv')
-
-# 출력
-df
